@@ -21,4 +21,19 @@ class AuthService{
         ];
     }
 
+    public function login(Array $data)
+    {
+        $user = User::where('email', $data['email'])->first();
+        if(!$user || Hash::check($data['password'], $user->password)){
+            throw new \Exception('Invalid credentials');
+        }
+
+        $token = $user->createToken('backend_api')->accessToken;
+
+        return [
+            "user" => $user,
+            "access_token" => $token
+        ];
+    }
+
 }
