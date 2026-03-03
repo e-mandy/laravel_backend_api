@@ -34,15 +34,9 @@ class AuthController extends Controller
                 "data" => $response
             ]);
         }catch(Exception $e){
-            if($e->getMessage() === "Invalid credentials"){
                 return response()->json([
-                    'message' => "User doesn't exist"
-                ], 401);
-            }
-
-            return response()->json([
-                'message' => "Internal server error"
-            ], 500);
+                    'message' => $e->getMessage()
+                ], $e->getMessage() === "Invalid credentials" ? 401 : 500);
         }
     }
 }
