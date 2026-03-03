@@ -24,7 +24,7 @@ class AuthService{
     public function login(Array $data)
     {
         $user = User::where('email', $data['email'])->first();
-        if(!$user || Hash::check($data['password'], $user->password)){
+        if(!$user || !Hash::check($data['password'], $user->password)){
             throw new \Exception('Invalid credentials');
         }
 
