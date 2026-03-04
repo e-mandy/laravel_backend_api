@@ -36,4 +36,8 @@ class AuthService{
         ];
     }
 
+    public function logout(User $authorized_user){
+        $authorized_user->token()->revoke();
+    }
+
 }
