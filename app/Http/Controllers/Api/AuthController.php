@@ -46,7 +46,7 @@ class AuthController extends Controller
             $this->service->logout($request->user());
             return response()->json([
                 'message' => "User logged out successfully",
-            ], 204);
+            ], 200);
         }catch(Exception $e){
             return response()->json([
                 'message' => "Unauthorized user"
