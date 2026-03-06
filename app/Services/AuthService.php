@@ -13,6 +13,8 @@ class AuthService{
             ...$data
         ]);
 
+        $user->sendEmailVerificationNotification();
+
         $token = $user->createToken('backend_api')->accessToken;
         
         return [
