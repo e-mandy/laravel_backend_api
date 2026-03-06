@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\User;
 use App\Services\AuthService;
 use Exception;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class AuthController extends Controller
             ], 201);
         }catch(Exception $e){
             return response()->json([
-                'message' => "User creation failed"
+                'message' => $e->getMessage()
             ], 500);
         }
     }
@@ -51,6 +52,29 @@ class AuthController extends Controller
             return response()->json([
                 'message' => "Unauthorized user"
             ], 401);
+        }
+    }
+
+    public function verify(Request $request, $id, $hash){
+        $user = User::findOrFail($id);
+
+        if(!hash_equals((string) $hash, sha1($user->getEmailForVerification()))){
+            return response()->json([
+                "message" => "Invalid link"
+            ], 403);
+        }
+
+        // Vérifier si le user était déjà vérifié
+        if($user->hasVerifiedEmail()){
+            return response()->json([
+                "message" => "Email already verified"
+            ]);
+        }
+
+        if($user->markEmailAsVerified()){
+            return response()->json([
+                "message" => "Email verified successfully"
+            ], 200);
         }
     }
 }
